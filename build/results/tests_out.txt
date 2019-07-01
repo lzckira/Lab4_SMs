@@ -1,7 +1,7 @@
-Breakpoint 1 at 0x2ac: file source/main.c, line 31.
+Breakpoint 1 at 0x28e: file source/main.c, line 33.
 Note: automatically using hardware breakpoints for read-only addresses.
 ======================================================
 Running all tests..."
 
-"right sequence unlock and lock again"..."right sequence with press both button togeter"..."wrong button followed by right sequence unlock and lock again"..."unlock with right sequence"..."wrong sequence"...======================================================
+"right sequence unlock and lock again"..."right sequence with press both button togeter"..."wrong button followed by right sequence unlock and lock again"..."lock and unlock with right sequence"..."wrong sequence"..."unlock then during sequence lock using A7 to lock"...======================================================
 Quitting: Remote doesn't know how to detach
