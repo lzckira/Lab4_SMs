@@ -75,25 +75,25 @@ expectPORTB 0x01
 setPINA 0x00
 continue 5
 expectPORTB 0x01
+checkResult
+
+test "unlock with right sequence"
+setPINA 0x04
+continue 5
+expectPORTB 0x01
+setPINA 0x00
+continue 5
+expectPORTB 0x01
+setPINA 0x02
+continue 5
+expectPORTB 0x00
+setPINA 0x00
+continue 5
+expectPORTB 0x00
 setPINA 0x80
 continue 5
 expectPORTB 0x00
-checkResult
-
-test "wrong sequence"
-setPINA 0x06
-continue 5
-expectPORTB 0x00
-setPINA 0x02
-continue 5
-expectPORTB 0x00
-setPINA 0x03
-continue 5
-expectPORTB 0x00
-setPINA 0x01
-continue 5
-expectPORTB 0x00
-setPINA 0x04
+setPINA 0x00
 continue 5
 expectPORTB 0x00
 checkResult
@@ -111,7 +111,7 @@ expectPORTB 0x00
 setPINA 0x04
 continue 5
 expectPORTB 0x00
-setPINA 0x01
+setPINA 0x00
 continue 5
 expectPORTB 0x00
 checkResult

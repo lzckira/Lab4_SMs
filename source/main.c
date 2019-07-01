@@ -13,8 +13,8 @@
 #include "simAVRHeader.h"
 #endif
 
-enum States {start, pressPound, releasePound, pressY , unlock, reset} state;
-//unsigned char temp = 0x00;
+enum States {start, pressPound, releasePound, pressY, unlock, lock, resetUnlock, resetLock} state;
+unsigned char flag = 0x00;
 void Tick();
 
 int main(void) {
@@ -38,10 +38,15 @@ DDRB = 0xFF; PORTB = 0x00; // Configure port B's 8 pins as outputs, initialize t
 void Tick() {
     switch(state) {
 	case start:
-	    state = reset;
+	    state = resetLock;
 	    break;
 	case pressPound:
-	    state = ((PINA & 0x04) && !(PINA & 0x03)) ? releasePound : reset;
+	    if ((PINA & 0x04) && !(PINA & 0x03)) {
+		state = releasePound;
+	    }
+	    else {
+		state = (flag) ? resetLock :resetUnlock;
+	    }
             break;
 	case releasePound:
 	    if (!(PINA & 0x07)) {
@@ -51,25 +56,34 @@ void Tick() {
 		state = releasePound;
 	    }
 	    else {
-		state = reset;
+		state = (flag) ? resetLock : resetUnlock;
 	    }
             break;
 	case pressY:
             if ((PINA & 0x02) && !(PINA & 0x05)) {
-                state = unlock;
+                state = (flag) ? lock : unlock;
             }
             else if (!(PINA & 0x07)) {
                 state = pressY;
             }
             else {
-                state = reset;
+		state = (flag) ? resetUnlock : resetLock;
             }
             break;
 	case unlock:
-	    state = (PINA & 0x80) ? reset : unlock;
+	    state = resetUnlock;
             break;
-	case reset:
-	    state = ((PINA & 0x04) && !(PINA & 0x03)) ? pressPound : reset;
+	case lock:
+	    state = resetLock;
+	    break;
+	case resetUnlock:
+	    state = ((PINA & 0x04) && !(PINA & 0x03)) ? pressPound : resetUnlock;
+	    if (PINA & 0x80) {
+		state = lock;
+	    }
+            break;
+        case resetLock:
+            state = ((PINA & 0x04) && !(PINA & 0x03)) ? pressPound : resetLock;
             break;
 	defalut:
             break;
@@ -86,9 +100,17 @@ void Tick() {
         case pressY:
             break;
         case unlock:
+	    flag = 0x01;
 	    PORTB = 0x01;
             break;
-        case reset:
+	case lock:
+	    flag = 0x00;
+	    PORTB = 0x00;
+	    break;
+	case resetUnlock:
+	    PORTB = 0x01;
+	    break;
+        case resetLock:
 	    PORTB = 0x00;
             break;
       //  defalut:
