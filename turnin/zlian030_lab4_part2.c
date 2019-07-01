@@ -40,7 +40,7 @@ void Tick() {
 	    state = wait;
 	    break;
 	case ADD:
-	    state = wait;
+	    state = ADDwait;
 	    break;
 	case ADDwait:
 	    if ((PINA & 0x01) && (PINA & 0x02)) {
@@ -57,7 +57,7 @@ void Tick() {
 	    }
 	    break;
 	case SUB:
-	    state = wait;
+	    state = SUBwait;
 	    break;
 	case SUBwait:
             if ((PINA & 0x01) && (PINA & 0x02)) {
@@ -70,7 +70,7 @@ void Tick() {
 		state = wait;
 	    }
             else {
-                state = SUB;
+                state = SUBwait;
             }
             break;
         case wait:

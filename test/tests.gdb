@@ -26,212 +26,95 @@
 echo ======================================================\n
 echo Running all tests..."\n\n
 
-test "PINA: 0x00, 0x01, 0x00, 0x02, 0x03 => PORTC: 0x07, 0x08, 0x08, 0x07, 0x00"
+test "right sequence unlock and lock again"
+setPINA 0x04
+continue 5
+expectPORTB 0x00
 setPINA 0x00
-continue 2
-expectPORTC 0x07
-setPINA 0x01
-continue 2
-expectPORTC 0x08
-setPINA 0x00
-continue 2
-expectPORTC 0x08
+continue 5
+expectPORTB 0x00
 setPINA 0x02
-continue 2
-expectPORTC 0x07
+continue 5
+expectPORTB 0x01
+setPINA 0x00
+continue 5
+expectPORTB 0x01
+setPINA 0x80
+continue 5
+expectPORTB 0x00
+checkResult
+
+test "right sequence with press both button togeter"
+setPINA 0x04
+continue 5
+expectPORTB 0x00
+setPINA 0x00
+continue 5
+expectPORTB 0x00
 setPINA 0x03
-continue 2
-expectPORTC 0x00
+continue 5
+expectPORTB 0x00
+setPINA 0x00
+continue 5
+expectPORTB 0x00
 checkResult
 
+test "wrong button followed by right sequence unlock and lock again"
+setPINA 0x01
+continue 5
+expectPORTB 0x00
+setPINA 0x04
+continue 5
+expectPORTB 0x00
+setPINA 0x00
+continue 5
+expectPORTB 0x00
+setPINA 0x02
+continue 5
+expectPORTB 0x01
+setPINA 0x00
+continue 5
+expectPORTB 0x01
+setPINA 0x80
+continue 5
+expectPORTB 0x00
+checkResult
 
-test "PINA: 0x01, 0x00, 0x01, 0x00, 0x03 => PORTC: 0x01, 0x01, 0x02, 0x02, 0x00"
-setPINA 0x01
-continue 2
-expectPORTC 0x01
-setPINA 0x00
-continue 2
-expectPORTC 0x01
-setPINA 0x01
-continue 2
-expectPORTC 0x02
-setPINA 0x00
-continue 2
-expectPORTC 0x02
+test "wrong sequence"
+setPINA 0x06
+continue 5
+expectPORTB 0x00
+setPINA 0x02
+continue 5
+expectPORTB 0x00
 setPINA 0x03
-continue 2
-expectPORTC 0x00
+continue 5
+expectPORTB 0x00
+setPINA 0x01
+continue 5
+expectPORTB 0x00
+setPINA 0x04
+continue 5
+expectPORTB 0x00
 checkResult
 
-test "addition from 0 to 9"
+test "wrong sequence"
 setPINA 0x01
-continue 2
-expectPORTC 0x01
-setPINA 0x00
-continue 2
-expectPORTC 0x01
+continue 5
+expectPORTB 0x00
+setPINA 0x02
+continue 5
+expectPORTB 0x00
+setPINA 0x02
+continue 5
+expectPORTB 0x00
+setPINA 0x04
+continue 5
+expectPORTB 0x00
 setPINA 0x01
-continue 2
-expectPORTC 0x02
-setPINA 0x00
-continue 2
-expectPORTC 0x02
-setPINA 0x01
-continue 2
-expectPORTC 0x03
-setPINA 0x00
-continue 2
-expectPORTC 0x03
-setPINA 0x01
-continue 2
-expectPORTC 0x04
-setPINA 0x00
-continue 2
-expectPORTC 0x04
-setPINA 0x01
-continue 2
-expectPORTC 0x05
-setPINA 0x00
-continue 2
-expectPORTC 0x05
-setPINA 0x01
-continue 2
-expectPORTC 0x06
-setPINA 0x00
-continue 2
-expectPORTC 0x06
-setPINA 0x01
-continue 2
-expectPORTC 0x07
-setPINA 0x00
-continue 2
-expectPORTC 0x07
-setPINA 0x01
-continue 2
-expectPORTC 0x08
-setPINA 0x00
-continue 2
-expectPORTC 0x08
-setPINA 0x01
-continue 2
-expectPORTC 0x09
-setPINA 0x00
-continue 2
-expectPORTC 0x09
-setPINA 0x01
-continue 2
-expectPORTC 0x09
-setPINA 0x00
-continue 2
-expectPORTC 0x09
+continue 5
+expectPORTB 0x00
 checkResult
-
-test "subtract from 9 to 0"
-setPINA 0x02
-continue 2
-expectPORTC 0x08
-setPINA 0x00
-continue 2
-expectPORTC 0x08
-setPINA 0x02
-continue 2
-expectPORTC 0x07
-setPINA 0x00
-continue 2
-expectPORTC 0x07
-setPINA 0x02
-continue 2
-expectPORTC 0x06
-setPINA 0x00
-continue 2
-expectPORTC 0x06
-setPINA 0x02
-continue 2
-expectPORTC 0x05
-setPINA 0x00
-continue 2
-expectPORTC 0x05
-setPINA 0x02
-continue 2
-expectPORTC 0x04
-setPINA 0x00
-continue 2
-expectPORTC 0x04
-setPINA 0x02
-continue 2
-expectPORTC 0x03
-setPINA 0x00
-continue 2
-expectPORTC 0x03
-setPINA 0x02
-continue 2
-expectPORTC 0x02
-setPINA 0x00
-continue 2
-expectPORTC 0x02
-setPINA 0x02
-continue 2
-expectPORTC 0x01
-setPINA 0x00
-continue 2
-expectPORTC 0x01
-setPINA 0x02
-continue 2
-expectPORTC 0x00
-setPINA 0x00
-continue 2
-expectPORTC 0x00
-setPINA 0x02
-continue 2
-expectPORTC 0x00
-setPINA 0x03
-continue 2
-expectPORTC 0x00
-checkResult
-
-test "test mixed"
-setPINA 0x00
-continue 2
-expectPORTC 0x00
-setPINA 0x02
-continue 2
-expectPORTC 0x00
-setPINA 0x01
-continue 2
-expectPORTC 0x01
-setPINA 0x00
-continue 2
-expectPORTC 0x01
-setPINA 0x01
-continue 2
-expectPORTC 0x02
-setPINA 0x00
-continue 2
-expectPORTC 0x02
-setPINA 0x01
-continue 2
-expectPORTC 0x03
-setPINA 0x02
-continue 2
-expectPORTC 0x02
-setPINA 0x01
-continue 2
-expectPORTC 0x03
-checkResult
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # Add tests below

@@ -13,14 +13,15 @@
 #include "simAVRHeader.h"
 #endif
 
-enum States {start, ADD, ADDwait, SUB, SUBwait, wait, reset} state;
-unsigned char temp = 0x07;
+enum States {start, pressPound, releasePound, pressY , unlock, reset} state;
+//unsigned char temp = 0x00;
 void Tick();
 
 int main(void) {
 /* Insert DDR and PORT initializations */
-DDRA = 0x00; PORTA = 0xFF; // Configure port B's 8 pins as inputs
-DDRC = 0xFF; PORTC = 0x00; // Configure port C's 8 pins as outputs, initialize to 0s
+DDRA = 0x00; PORTA = 0xFF; // Configure port A's 8 pins as inputs
+DDRB = 0xFF; PORTB = 0x00; // Configure port B's 8 pins as outputs, initialize to 0s
+//DDRC = 0xFF; PORTC = 0x00; // Configure port C's 8 pins as outputs, initialize to 0s
 
 
 //    enum States {start, LED1On, LED1Release, LED2On, LED2Release} state;
@@ -37,86 +38,64 @@ DDRC = 0xFF; PORTC = 0x00; // Configure port C's 8 pins as outputs, initialize t
 void Tick() {
     switch(state) {
 	case start:
-	    state = wait;
+	    state = reset;
 	    break;
-	case ADD:
-	    state = wait;
-	    break;
-	case ADDwait:
-	    if ((PINA & 0x01) && (PINA & 0x02)) {
+	case pressPound:
+	    state = ((PINA & 0x04) && !(PINA & 0x03)) ? releasePound : reset;
+            break;
+	case releasePound:
+	    if (!(PINA & 0x07)) {
+		state = pressY;
+	    }
+	    else if ((PINA & 0x04) && !(PINA & 0x03)) {
+		state = releasePound;
+	    }
+	    else {
 		state = reset;
 	    }
-	    else if (!(PINA & 0x01) && (PINA & 0x02)) {
-		state = SUB;
-	    }
-	    else if (!(PINA & 0x01) && !(PINA & 0x02)) {
-		state = wait;
-	    }
-	    else {
-		state = ADDwait;
-	    }
-	    break;
-	case SUB:
-	    state = wait;
-	    break;
-	case SUBwait:
-            if ((PINA & 0x01) && (PINA & 0x02)) {
-                state = reset;
+            break;
+	case pressY:
+            if ((PINA & 0x02) && !(PINA & 0x05)) {
+                state = unlock;
             }
-            else if (!(PINA & 0x02) && (PINA & 0x01)) {
-                state = ADD;
+            else if (!(PINA & 0x07)) {
+                state = pressY;
             }
-	    else if (!(PINA & 0x01) && !(PINA & 0x02)){
-		state = wait;
-	    }
             else {
-                state = SUB;
+                state = reset;
             }
             break;
-        case wait:
-            if ((PINA & 0x01) && (PINA & 0x02)) {
-                state = reset;
-            }
-            else if (!(PINA & 0x02) && (PINA & 0x01)) {
-                state = ADD;
-            }
-	    else if (!(PINA & 0x01) && (PINA & 0x02)) {
-                state = SUB;
-            }
-	    else {
-		state = wait;
-	    } 
+	case unlock:
+	    state = (PINA & 0x80) ? reset : unlock;
             break;
 	case reset:
-	    state = wait;
-	    break;
-	default:
-	    state = wait;
-	    break;
+	    state = ((PINA & 0x04) && !(PINA & 0x03)) ? pressPound : reset;
+            break;
+	defalut:
+            break;
     }
 
     switch(state) {
-        case start:
+        case start: 
+            PORTB = 0x00;
             break;
-        case ADD:
-            temp = (temp == 0x09) ? 0x09 : (temp + 0x01);
+        case pressPound:
             break;
-	case ADDwait:
-	    break;
-        case SUB:
-	    temp = (temp == 0x00) ? 0x00 : (temp - 0x01);
+        case releasePound:
             break;
-	case SUBwait:
-	    break;
-        case wait:
+        case pressY:
             break;
-	case reset:
-	    temp = 0x00;
-	    break;
-        default:
+        case unlock:
+	    PORTB = 0x01;
             break;
-    }
-    
-    PORTC = temp;    
+        case reset:
+	    PORTB = 0x00;
+            break;
+      //  defalut:
+	   // PORTB = 0x00;
+         //   break;
+    } 
+
+//    PORTC = state;    
 }
 
